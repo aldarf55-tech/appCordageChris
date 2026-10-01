@@ -1,0 +1,41 @@
+:root {
+  /* Gestion des Safe Areas (encoches et barres de navigation natives) */
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+}
+
+* {
+  /* Désactive le surbrillance bleu au tap sur mobile */
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* Empêche le défilement élastique global */
+  overscroll-behavior-y: none;
+  /* Empêche la sélection de texte involontaire lors des interactions */
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Ajustement aux encoches du téléphone */
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  
+  height: 100vh;
+  height: 100dvh; /* Utilise la hauteur dynamique réelle de l'écran mobile */
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
