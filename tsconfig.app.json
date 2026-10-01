@@ -9,9 +9,8 @@
     "skipLibCheck": true,
 
     /* --- VOS AJOUTS POUR LES PATH ALIASES --- */
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
+   "paths": {
+      "@/*": ["./src/*"]
     },
 
     /* Bundler mode */
