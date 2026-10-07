@@ -1,5 +1,5 @@
 export interface Client {
-  id?: number;
+  id?: string;
   prenom: string;
   nom: string;
   telephone: string;
@@ -7,6 +7,7 @@ export interface Client {
   notes?: string;
   createdAt: string;
   updatedAt?: string;
+  synced: number; // 0 = non synchronisé, 1 = synchronisé
 }
 
 export type SortOrder = 'desc' | 'asc';

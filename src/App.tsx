@@ -1,119 +1,69 @@
 import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '@/db/database';
 import type { ActiveTab } from '@/types/navigation';
+import type { Client } from '@/types/client';
 import { BottomNav } from '@/components/navigation/BottomNav';
 import { AddClientAndRacquetForm } from '@/components/forms/AddClientAndRacquetForm';
 import { dashboardStyles } from '@/styles/dashboardStyles';
 
+import { DashboardView } from '@/components/DashboardView';
+import { TodoView } from '@/components/TodoView';
+import { DoneView } from '@/components/DoneView';
+import { ClosedView } from '@/components/ClosedView';
+import { HistoryView } from '@/components/HistoryView';
+import { ClientsView } from '@/components/ClientsView';
+import { StatsView } from '@/components/StatsView';
+
+import { useAutoSync } from '@/hooks/useAutoSync';
+
+const TAB_TITLES: Record<ActiveTab, string> = {
+  dashboard: 'Tableau de bord',
+  todo: 'À faire',
+  done: 'Terminés',
+  closed: 'Clôturés',
+  clients: 'Répertoire clients',
+  history: 'Historique',
+  stats: 'Statistiques & Meilleurs Clients',
+};
+
 export default function App() {
+  // Synchronisation automatique Supabase
+  useAutoSync();
+
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [showAddModal, setShowAddModal] = useState(false);
-
-  // Requêtes réactives Dexie en temps réel
-  const jobsToDo = useLiveQuery(() => 
-    db.stringingJobs.where('statut').equals('recu').or('statut').equals('en_cours').toArray()
-  ) || [];
-
-  const unpaidJobs = useLiveQuery(() => 
-    db.stringingJobs.where('statut').equals('prêt').toArray()
-  ) || [];
+  const [clientForNewJob, setClientForNewJob] = useState<Client | null>(null);
 
   return (
     <div className={dashboardStyles.pageContainer}>
-      {/* HEADER FIXE */}
+      {/* HEADER FIXE AVEC TITRE DYNAMIQUE */}
       <header className={dashboardStyles.header}>
-        <h1 className={dashboardStyles.title}>Atelier Cordage</h1>
-        <span className="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-0.5 rounded-full">
-          En ligne
-        </span>
+        <h1 className={dashboardStyles.title}>
+          {TAB_TITLES[activeTab] || 'Tableau de bord'}
+        </h1>
       </header>
 
-      {/* CONTENU SELON L'ONGLET ACTIF */}
-      <main className="flex-1">
+      {/* CONTENU DE LA VUE ACTIVE */}
+      <main className="flex min-w-0 flex-1">
         {activeTab === 'dashboard' && (
-          <div className="space-y-4">
-            {/* HAUT A GAUCHE : DIV CLICABLE "A FAIRE" */}
-            <div className={dashboardStyles.topGrid}>
-              <div
-                onClick={() => setActiveTab('todo')}
-                className={dashboardStyles.kpiCard}
-              >
-                <span className={dashboardStyles.kpiLabel}>Cordages à faire</span>
-                <span className={dashboardStyles.kpiValue}>{jobsToDo.length}</span>
-                <span className="text-[10px] text-blue-700 font-medium">Voir le détail →</span>
-              </div>
-
-              {/* CARTE INDICATIVE STATUT */}
-              <div className="p-4 bg-gray-100 border border-gray-200 rounded-2xl flex flex-col justify-between opacity-75">
-                <span className="text-xs font-semibold text-gray-500 uppercase">En cours</span>
-                <span className="text-2xl font-bold text-gray-700">
-                  {jobsToDo.filter((j) => j.statut === 'en_cours').length}
-                </span>
-                <span className="text-[10px] text-gray-500">Sur la machine</span>
-              </div>
-            </div>
-
-            {/* AU MILIEU : EN ATTENTE DE PAIEMENT */}
-            <section className={dashboardStyles.middleSection}>
-              <div className={dashboardStyles.sectionTitle}>
-                <span>Terminés - Attente de paiement</span>
-                <span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                  {unpaidJobs.length}
-                </span>
-              </div>
-
-              {unpaidJobs.length === 0 ? (
-                <div className="p-4 text-center bg-white rounded-xl border border-dashed border-gray-300 text-gray-400 text-sm">
-                  Aucun cordage en attente de paiement.
-                </div>
-              ) : (
-                <div className={dashboardStyles.unpaidList}>
-                  {unpaidJobs.map((job) => (
-                    <div key={job.id} className={dashboardStyles.unpaidCard}>
-                      <div>
-                        <p className={dashboardStyles.unpaidClient}>Client #{job.clientId}</p>
-                        <p className={dashboardStyles.unpaidRacquet}>
-                          {job.cordageMontant} - {job.tensionMontant}kg
-                        </p>
-                      </div>
-                      <span className={dashboardStyles.unpaidPrice}>{job.prix} €</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-          </div>
+          <DashboardView
+            onNavigateToTodo={() => setActiveTab('todo')}
+            onNavigateToDone={() => setActiveTab('done')}
+            onNavigateToClosed={() => setActiveTab('closed')}
+          />
         )}
-
-        {/* VUES SECONDAIRES */}
-        {activeTab === 'todo' && (
-          <div className="p-4">
-            <h2 className="text-lg font-bold mb-3">Liste des cordages à faire ({jobsToDo.length})</h2>
-            <p className="text-sm text-gray-500">Détail des travaux en attente de réalisation...</p>
-          </div>
-        )}
-
-        {activeTab === 'history' && (
-          <div className="p-4">
-            <h2 className="text-lg font-bold mb-3">Historique chronologique</h2>
-            <p className="text-sm text-gray-500">Tous les cordages réalisés...</p>
-          </div>
-        )}
-
+        {activeTab === 'todo' && <TodoView />}
+        {activeTab === 'done' && <DoneView />}
+        {activeTab === 'closed' && <ClosedView />}
+        {activeTab === 'history' && <HistoryView />}
         {activeTab === 'clients' && (
-          <div className="p-4">
-            <h2 className="text-lg font-bold mb-3">Répertoire Clients</h2>
-            <p className="text-sm text-gray-500">Liste de vos clients par ordre chronologique...</p>
-          </div>
+          <ClientsView
+            onAddJobForClient={(client) => {
+              setClientForNewJob(client);
+              setShowAddModal(true);
+            }}
+          />
         )}
-
-        {activeTab === 'stats' && (
-          <div className="p-4">
-            <h2 className="text-lg font-bold mb-3">Statistiques & Meilleurs Clients</h2>
-            <p className="text-sm text-gray-500">Chiffre d'affaires, meilleures marques...</p>
-          </div>
-        )}
+        {activeTab === 'stats' && <StatsView />}
       </main>
 
       {/* MODALE D'AJOUT DE NOUVEAU CORDAGE (+) */}
@@ -121,26 +71,31 @@ export default function App() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="bg-white w-full max-w-lg rounded-t-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-4 space-y-4">
             <div className="flex justify-between items-center border-b pb-2">
-              <h3 className="font-bold text-gray-800">Ajouter un Cordage</h3>
               <button
                 type="button"
-                onClick={() => setShowAddModal(false)}
+                onClick={() => {
+                  setShowAddModal(false);
+                  setClientForNewJob(null);
+                }}
                 className="text-gray-400 text-xl font-bold p-1"
               >
                 ✕
               </button>
             </div>
-            
+
             <AddClientAndRacquetForm
+              key={clientForNewJob?.id ?? 'new-client'}
+              existingClient={clientForNewJob}
               onSuccess={() => {
                 setShowAddModal(false);
+                setClientForNewJob(null);
               }}
             />
           </div>
         </div>
       )}
 
-      {/* BARRE DE NAVIGATION ET BOUTON (+) PERMANENTS */}
+      {/* BARRE DE NAVIGATION PERMANENTE */}
       <BottomNav
         currentTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab)}

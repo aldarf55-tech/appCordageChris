@@ -1,13 +1,11 @@
 import { db } from '@/db/database';
 import type { StringingJob } from '@/types/cordage';
 
-// Récupère les cordages non terminés ('recu' ou 'en_cours')
+// Récupère les cordages qui attendent encore le cordage.
 export async function getJobsToDo(): Promise<StringingJob[]> {
   return await db.stringingJobs
     .where('statut')
     .equals('recu')
-    .or('statut')
-    .equals('en_cours')
     .toArray();
 }
 
@@ -15,6 +13,14 @@ export async function getJobsToDo(): Promise<StringingJob[]> {
 export async function getUnpaidJobs(): Promise<StringingJob[]> {
   return await db.stringingJobs
     .where('statut')
-    .equals('prêt')
+    .equals('pret')
     .toArray();
+}
+
+export async function getClosedJobs(): Promise<StringingJob[]> {
+  return await db.stringingJobs
+    .where('statut')
+    .equals('livre')
+    .reverse()
+    .sortBy('dateReception');
 }

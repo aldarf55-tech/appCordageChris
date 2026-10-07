@@ -77,7 +77,15 @@ export const BottomNav: React.FC<BottomNavProps> = ({
         aria-label="Ajouter un cordage"
         className={dashboardStyles.fabButton}
       >
-        +
+        <svg
+          className="w-7 h-7"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth="3"
+        >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
       </button>
     </>
   );

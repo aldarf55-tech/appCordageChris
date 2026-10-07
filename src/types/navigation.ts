@@ -1,6 +1,1 @@
-export type ActiveTab = 'dashboard' | 'todo' | 'unpaid' | 'history' | 'clients' | 'stats';
-
-export interface DashboardStats {
-  jobsToDoCount: number;
-  unpaidCount: number;
-}
+export type ActiveTab = 'dashboard' | 'todo' | 'done' | 'closed' | 'history' | 'clients' | 'stats';

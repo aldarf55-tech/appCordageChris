@@ -17,59 +17,36 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+  # CordageChris
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+  Application React, TypeScript et Vite de suivi des travaux de cordage. Les données sont stockées localement avec IndexedDB (Dexie), puis synchronisées avec Supabase lorsque le réseau est disponible.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+  ## Démarrage
 
-```
+  ```sh
+  npm install
+  npm run dev
+  ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+  ## Configuration Supabase
 
-```js
+  Créer un fichier `.env.local` à la racine avec les variables suivantes :
+
+  ```env
+  VITE_SUPABASE_URL=https://<projet>.supabase.co
+  VITE_SUPABASE_ANON_KEY=<cle-publique-anon>
+  ```
+
+  La clé `anon` est publique et doit être protégée par les politiques RLS Supabase adaptées. Ne jamais placer une clé `service_role` dans une variable `VITE_*`.
+
+  La colonne `stringingJobs.clientId` doit accepter `NULL` (et sa clé étrangère devrait utiliser `ON DELETE SET NULL`) : lors de la suppression d'un client, ses prises en charge sont conservées et dissociées de lui.
+
+  ## Vérifications
+
+  ```sh
+  npm run lint
+  npm run build
+  ```
+
+  Les services de données se trouvent dans `src/services`, les modèles partagés dans `src/types` et le schéma IndexedDB dans `src/db/database.ts`.
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
