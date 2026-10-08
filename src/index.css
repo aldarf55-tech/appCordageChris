@@ -43,3 +43,12 @@ body {
   display: flex;
   justify-content: center; /* Centre le conteneur mobile sur grand écran */
 }
+
+.app-safe-bottom-nav {
+  padding-bottom: calc(1rem + var(--sab, 0px));
+}
+
+.app-fab {
+  right: max(1rem, calc((100vw - 28rem) / 2 + 1rem));
+  bottom: calc(var(--sab, 0px) + 1rem);
+}

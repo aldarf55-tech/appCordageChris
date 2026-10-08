@@ -16,6 +16,21 @@ export function TodoView() {
 
   // Map d'accès rapide pour les clients par leur ID
   const clientsMap = new Map(clients.map((c) => [c.id, c]));
+  const jobsByIntake = new Map<string, typeof jobs>();
+  let ungroupedIndex = 0;
+
+  for (const job of jobs) {
+    const intakeKey = job.clientId
+      ? `${job.clientId}:${job.dateReception}`
+      : `job:${job.id ?? ungroupedIndex++}`;
+    const group = jobsByIntake.get(intakeKey);
+    if (group) {
+      group.push(job);
+    } else {
+      jobsByIntake.set(intakeKey, [job]);
+    }
+  }
+  const jobGroups = [...jobsByIntake.values()];
 
   return (
     <div className="w-full min-w-0 flex-1 p-4 space-y-4 pb-20">
@@ -31,7 +46,8 @@ export function TodoView() {
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {jobs.map((job) => {
+          {jobGroups.map((jobGroup) => {
+            const job = jobGroup[0];
             const client = job.clientId ? clientsMap.get(job.clientId) : undefined;
             const clientName = client ? `${client.prenom} ${client.nom}` : undefined;
 
@@ -39,6 +55,7 @@ export function TodoView() {
               <JobCard
                 key={job.id}
                 job={job}
+                jobs={jobGroup}
                 clientName={clientName}
                 clientPhone={client?.telephone}
               />

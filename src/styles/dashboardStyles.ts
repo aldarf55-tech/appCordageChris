@@ -1,6 +1,6 @@
 export const dashboardStyles = {
-  // Page container (centré sur desktop avec max-w-md)
-  pageContainer: 'flex flex-col min-h-screen bg-gray-50 text-gray-800 pb-24 select-none w-full max-w-none sm:max-w-md mx-auto',
+  // Page container (centré sur desktop avec une largeur de téléphone)
+  pageContainer: 'flex flex-col min-h-screen bg-gray-50 text-gray-800 pb-24 select-none w-full max-w-md mx-auto',
   header: 'p-4 bg-white border-b border-gray-100 shadow-sm flex items-center justify-between sticky top-0 z-10',
   title: 'text-lg font-bold text-gray-900',
   
@@ -26,11 +26,13 @@ export const dashboardStyles = {
   unpaidPrice: 'text-sm font-bold text-amber-900',
 
   // Barre de navigation du bas
-  bottomNavWrapper: 'fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 flex items-center justify-between shadow-lg z-40 w-full max-w-none sm:max-w-md mx-auto',
+  bottomNavWrapper: 'fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 py-2 app-safe-bottom-nav flex items-center justify-between shadow-lg z-40 w-full max-w-md mx-auto',
   navButtonsContainer: 'w-3/4 flex items-center justify-around pr-2 border-r border-gray-100',
   navButton: 'flex flex-col items-center justify-center p-1 text-gray-400 hover:text-blue-600 transition-colors text-[10px] font-medium',
   navButtonActive: 'flex flex-col items-center justify-center p-1 text-blue-600 font-bold text-[10px]',
   navIcon: 'w-6 h-6 mb-0.5',
 
   // Bouton flottant +
-fabButton: 'fixed bottom-4 right-4 w-14 h-14 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center select-none active:scale-95 transition-all duration-150 z-50 touch-manipulation',};
+  fabButton:
+    'fixed app-fab w-14 h-14 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-full shadow-lg hover:shadow-xl flex items-center justify-center select-none active:scale-95 transition-all duration-150 z-50 touch-manipulation',
+};
