@@ -45,7 +45,7 @@ body {
 }
 
 .app-safe-bottom-nav {
-  padding-bottom: calc(1rem + var(--sab, 0px));
+  padding-bottom: calc(2rem + var(--sab, 0px));
 }
 
 .app-fab {

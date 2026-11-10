@@ -33,7 +33,7 @@ export function DashboardView({
           onClick={onNavigateToDone}
           className={`${dashboardStyles.kpiCard} ${dashboardStyles.kpiCardDone}`}
         >
-          <span className={`${dashboardStyles.kpiLabel} ${dashboardStyles.kpiLabelDone}`}>TERMINÉS</span>
+          <span className={`${dashboardStyles.kpiLabel} ${dashboardStyles.kpiLabelDone}`}>PRÊTS, EN ATTENTE DE PAIEMENT</span>
           <span className={`${dashboardStyles.kpiValue} ${dashboardStyles.kpiValueDone}`}>{unpaidJobs.length}</span>
         </button>
         <button

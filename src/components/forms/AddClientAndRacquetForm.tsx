@@ -24,6 +24,14 @@ const emptyClient: ClientFormData = {
   notesClient: '',
 };
 
+function getTodayDate(): string {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function createEmptyRacquet(): RacquetFormData {
   return {
   marque: '',
@@ -51,6 +59,7 @@ export const AddClientAndRacquetForm: React.FC<FormProps> = ({ existingClient, o
     email: existingClient?.email ?? '',
     notesClient: existingClient?.notes ?? '',
   }));
+  const [dateReception, setDateReception] = useState(getTodayDate);
   const [racquets, setRacquets] = useState<RacquetDraft[]>([createEmptyRacquet()]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -123,7 +132,8 @@ export const AddClientAndRacquetForm: React.FC<FormProps> = ({ existingClient, o
           quantite: Number(racquet.quantite),
           prixUnitaire: Number(racquet.prixUnitaire),
         })),
-        selectedClientId || undefined
+        selectedClientId || undefined,
+        dateReception
       );
       onSuccess?.(newClientId);
     } catch (err) {
@@ -141,10 +151,27 @@ export const AddClientAndRacquetForm: React.FC<FormProps> = ({ existingClient, o
       {errorMsg && <div className={formStyles.errorAlert}>{errorMsg}</div>}
       {successMsg && <div className={formStyles.successAlert}>{successMsg}</div>}
 
-      {/* SECTION 1 : CLIENT */}
+      <section className={formStyles.section}>
+        <h3 className={formStyles.subtitle}>1. Date de réception</h3>
+        <div>
+          <label htmlFor="date-reception" className={formStyles.label}>
+            Date de réception *
+          </label>
+          <input
+            id="date-reception"
+            type="date"
+            required
+            value={dateReception}
+            onChange={(event) => setDateReception(event.target.value)}
+            className={formStyles.input}
+          />
+        </div>
+      </section>
+
+      {/* SECTION 2 : CLIENT */}
       <section className={formStyles.section}>
         <h3 className={formStyles.subtitle}>
-          1. {selectedClientId ? 'Vérifier ou modifier les informations client' : 'Informations client'}
+          2. {selectedClientId ? 'Vérifier ou modifier les informations client' : 'Informations client'}
         </h3>
 
         <div>
@@ -226,7 +253,7 @@ export const AddClientAndRacquetForm: React.FC<FormProps> = ({ existingClient, o
       </section>
 
       <section className={formStyles.sectionBordered}>
-        <h3 className={formStyles.subtitle}>2. Raquettes & cordages</h3>
+        <h3 className={formStyles.subtitle}>3. Raquettes & cordages</h3>
 
         {racquets.map((racquet, index) => {
           const fieldId = `racquet-${index}`;

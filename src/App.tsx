@@ -18,7 +18,7 @@ import { useAutoSync } from '@/hooks/useAutoSync';
 const TAB_TITLES: Record<ActiveTab, string> = {
   dashboard: 'Tableau de bord',
   todo: 'À faire',
-  done: 'Terminés',
+  done: 'Prêts / En Attente de Paiement',
   closed: 'Clôturés',
   clients: 'Répertoire clients',
   history: 'Historique',

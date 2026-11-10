@@ -10,7 +10,8 @@ import type { StringingJob, ClientFormData, RacquetFormData, JobStatus } from '@
 export async function createClientWithRacquets(
   clientData: ClientFormData,
   racquets: RacquetFormData[],
-  existingClientId?: string
+  existingClientId?: string,
+  dateReception?: string
 ): Promise<string> {
   const now = new Date().toISOString();
   const clientId = existingClientId || crypto.randomUUID();
@@ -53,7 +54,7 @@ export async function createClientWithRacquets(
       quantite: racquet.quantite,
       prixTotal: racquet.quantite * racquet.prixUnitaire,
       statut: 'recu',
-      dateReception: now,
+      dateReception: dateReception || now,
       notes: racquet.notesRaquette?.trim() || undefined,
       createdAt: now,
       updatedAt: now,
